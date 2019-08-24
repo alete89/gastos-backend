@@ -1,0 +1,3 @@
+class Tarjeta {
+    gastos: Gasto[]
+}

@@ -14,7 +14,6 @@ export class Bootstrap {
 
     async run() {
         Moneda.save([this.peso, this.dolar])
-        Tag.save([this.chino, this.sube])
         Gasto.save([this.picada, this.weird])
     }
 }

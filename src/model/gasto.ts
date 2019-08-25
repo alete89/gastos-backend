@@ -40,7 +40,9 @@ export class Gasto extends BaseEntity {
     paga_iva: boolean = false
     @Column()
     monto_iva: number = 0
-    @ManyToMany(type => Tag, tag => tag.gastos)
+    @ManyToMany(type => Tag, tag => tag.gastos, {
+        cascade: true,
+    })
     @JoinTable()
     tags: Tag[]
 }

@@ -1,4 +1,11 @@
-export class Moneda {
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+
+@Entity()
+export class Moneda extends BaseEntity {
+    @PrimaryGeneratedColumn()
+    id: number
+    @Column()
     nombre: string
-    cotizacion: number
+    @Column({ nullable: false })
+    cotizacion: number = 1
 }

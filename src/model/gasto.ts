@@ -1,4 +1,6 @@
-class Gasto {
+import { Moneda } from "./moneda"
+
+export class Gasto {
     producto: string
     comercio: string
     monto_total: number

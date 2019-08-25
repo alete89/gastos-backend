@@ -35,7 +35,7 @@ export class Gasto extends BaseEntity {
     @Column()
     fecha: Date = new Date()
     @Column()
-    mes_primer_resumen: number = new Date().getMonth()
+    mes_primer_resumen: number = this.fecha.getMonth() + 1
     @Column()
     paga_iva: boolean = false
     @Column()

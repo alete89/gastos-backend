@@ -10,6 +10,9 @@ import { Tarjeta } from "../model/tarjeta"
 const app: express.Application = express()
 const bootstrap: Bootstrap = new Bootstrap()
 
+app.use(express.json()) // to support JSON-encoded bodies
+// app.use(express.urlencoded()); // to support URL-encoded bodies
+
 app.get("/", function(req, res) {
     res.send("Welcome TEST")
 })

@@ -7,9 +7,11 @@ import {
     PrimaryGeneratedColumn,
     ManyToMany,
     JoinTable,
+    ManyToOne,
 } from "typeorm"
 import { Moneda } from "./moneda"
 import { Tag } from "./tag"
+import { Tarjeta } from "./tarjeta"
 
 @Entity()
 export class Gasto extends BaseEntity {
@@ -45,4 +47,6 @@ export class Gasto extends BaseEntity {
     })
     @JoinTable()
     tags: Tag[]
+    @ManyToOne(type => Tarjeta, tarjeta => tarjeta.gastos)
+    tarjeta: Tarjeta
 }

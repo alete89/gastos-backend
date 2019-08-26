@@ -29,7 +29,7 @@ export class Gasto extends BaseEntity {
     comercio: string = ""
     @Column()
     monto_total: number = 0
-    @OneToOne(type => Moneda)
+    @ManyToOne(type => Moneda)
     @JoinColumn()
     moneda: Moneda
     @Column()
@@ -47,6 +47,6 @@ export class Gasto extends BaseEntity {
     })
     @JoinTable()
     tags: Tag[]
-    @ManyToOne(type => Tarjeta, tarjeta => tarjeta.gastos)
+    @ManyToOne(type => Tarjeta, tarjeta => tarjeta.gastos, { nullable: false })
     tarjeta: Tarjeta
 }

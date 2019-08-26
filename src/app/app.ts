@@ -1,8 +1,10 @@
 import express, { Request, Response } from "express"
 import { createConnection } from "typeorm"
+import { Gasto } from "../model/gasto"
 import { Moneda } from "../model/moneda"
 import { Bootstrap } from "./bootstrap"
-import { Gasto } from "../model/gasto"
+import { Tag } from "../model/tag"
+import { Tarjeta } from "../model/tarjeta"
 
 // Create a new express application instance
 const app: express.Application = express()
@@ -18,8 +20,18 @@ app.get("/monedas", async function(req: Request, res: Response) {
 })
 
 app.get("/gastos", async function(req: Request, res: Response) {
-    const gastos = await Gasto.find()
+    const gastos = await Gasto.find({ relations: ["tags"] })
     res.send(gastos)
+})
+
+app.get("/tags", async function(req: Request, res: Response) {
+    const tags = await Tag.find()
+    res.send(tags)
+})
+
+app.get("/tarjetas", async function(req: Request, res: Response) {
+    const tarjetas = await Tarjeta.find({ relations: ["gastos"] })
+    res.send(tarjetas)
 })
 
 app.listen(3000, function() {

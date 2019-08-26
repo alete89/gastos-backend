@@ -5,6 +5,7 @@ import { Moneda } from "../model/moneda"
 import { Bootstrap } from "./bootstrap"
 import { Tag } from "../model/tag"
 import { Tarjeta } from "../model/tarjeta"
+import { ok } from "assert"
 
 // Create a new express application instance
 const app: express.Application = express()
@@ -35,6 +36,17 @@ app.get("/tags", async function(req: Request, res: Response) {
 app.get("/tarjetas", async function(req: Request, res: Response) {
     const tarjetas = await Tarjeta.find({ relations: ["gastos"] })
     res.send(tarjetas)
+})
+
+app.post("/gasto", async function(req: Request, res: Response) {
+    try {
+        console.log(req.body)
+        const gasto = new Gasto(req.body)
+        await gasto.save()
+        res.send(ok)
+    } catch (error) {
+        res.sendStatus(400)
+    }
 })
 
 app.listen(3000, function() {

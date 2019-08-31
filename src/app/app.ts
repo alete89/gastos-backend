@@ -31,7 +31,7 @@ app.get("/monedas", async function(req: Request, res: Response) {
 })
 
 app.get("/gastos", async function(req: Request, res: Response) {
-    const gastos = await Gasto.find({ relations: ["tags"] })
+    const gastos = await Gasto.find({ relations: ["tags", "moneda", "tarjeta"] })
     res.send(gastos)
 })
 

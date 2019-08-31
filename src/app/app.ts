@@ -47,12 +47,12 @@ app.get("/tarjetas", async function(req: Request, res: Response) {
 
 app.post("/gasto", async function(req: Request, res: Response) {
     try {
-        console.log(req.body)
         const gasto = new Gasto(req.body)
         await gasto.save()
         res.send(ok)
     } catch (error) {
         res.sendStatus(400)
+        console.log(error)
     }
 })
 
@@ -68,4 +68,5 @@ async function runBootstrap() {
     await bootstrap.run()
 }
 
-run().then(() => runBootstrap())
+run()
+// .then(() => runBootstrap())

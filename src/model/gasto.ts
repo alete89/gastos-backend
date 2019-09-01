@@ -49,4 +49,7 @@ export class Gasto extends BaseEntity {
     tags: Tag[]
     @ManyToOne(type => Tarjeta, tarjeta => tarjeta.gastos, { nullable: false })
     tarjeta: Tarjeta
+
+    @Column()
+    comentario: string
 }

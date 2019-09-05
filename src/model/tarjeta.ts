@@ -16,4 +16,16 @@ export class Tarjeta extends BaseEntity {
         cascade: true,
     })
     gastos: Gasto[]
+
+    @Column()
+    dia_regla_cierre_resumen: number // día dentro de la semana 0-6
+
+    @Column()
+    semana_regla_cierre_resumen: number // semana dentro de un mes 0-3
+
+    @Column()
+    dia_regla_vencimiento: number // día dentro de la semana 0-6
+
+    @Column()
+    semana_regla_vencimiento: number // semana dentro de un mes 0-3
 }

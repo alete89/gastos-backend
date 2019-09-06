@@ -30,11 +30,11 @@ export class Tarjeta extends BaseEntity {
     semana_regla_vencimiento: number // semana dentro de un mes 0-3
 
     fechaDeCierre(anio: number, mes: number) {
-        var i = 0
-        var fecha = new Date(anio, mes - 1, 1)
-        console.log(fecha)
-        while (this.semana_regla_cierre_resumen !== i) {
-            if (this.dia_regla_cierre_resumen == fecha.getDay()) i++
+        let semana = 0
+        let fecha = new Date(anio, mes - 1, 1)
+        while (true) {
+            if (this.dia_regla_cierre_resumen == fecha.getDay()) semana++
+            if (this.semana_regla_cierre_resumen == semana) break
             fecha.setDate(fecha.getDate() + 1)
         }
         return fecha

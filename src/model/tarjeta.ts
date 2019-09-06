@@ -30,13 +30,11 @@ export class Tarjeta extends BaseEntity {
     semana_regla_vencimiento: number // semana dentro de un mes 0-3
 
     fechaDeCierre(anio: number, mes: number) {
-        let semana = 0
         let fecha = new Date(anio, mes - 1, 1)
-        while (true) {
-            if (this.dia_regla_cierre_resumen == fecha.getDay()) semana++
-            if (this.semana_regla_cierre_resumen == semana) break
-            fecha.setDate(fecha.getDate() + 1)
-        }
+        const diferencia_dias = this.dia_regla_cierre_resumen - fecha.getDay()
+        if (diferencia_dias < 0) fecha.setDate(7 * (this.semana_regla_cierre_resumen - 1) + 7 + diferencia_dias + 1) //SI SEMANA_REGLA_CIERRE_RESUMEN VA DE 1 A 4 HAY QUE RESTARLE UNO
+        else fecha.setDate(7 * (this.semana_regla_cierre_resumen - 1) + diferencia_dias + 1)
+        if (fecha.getMonth() > mes - 1) fecha.setDate(fecha.getDate() - 7)  //EN EL CASO DE QUE LA REGLA SEA LA 5TA SEMANA Y ESE DIA TIENE SOLO 4 EN ESE MES, LE RESTA 7 DIAS PARA DEVOLVER EL 4TO.
         return fecha
     }
 }

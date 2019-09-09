@@ -10,7 +10,6 @@ import { ok } from "assert"
 // Create a new express application instance
 const app: express.Application = express()
 const bootstrap: Bootstrap = new Bootstrap()
-let moment = require('moment');
 
 app.use(express.json()) // to support JSON-encoded bodies
 app.use(express.urlencoded()) // to support URL-encoded bodies
@@ -37,16 +36,15 @@ app.get("/gastos", async function (req: Request, res: Response) {
 })
 
 app.put("/gastos/mes", async function (req: Request, res: Response) {
-    let fecha = new Date(req.body.anio, req.body.mes, 1)
-    let fechaFormateada: Date = moment(fecha).format('YYYY-MM-DD HH:mm:SS')
-    let unMesAntes = moment(fecha.setMonth(fecha.getMonth() - 1)).format('YYYY-MM-DD HH:mm:SS')
+    const fecha = formatearFecha(new Date(req.body.anio, req.body.mes, 1))
+    const unMesAntes = formatearFecha(new Date(req.body.anio, req.body.mes - 1, 1))
     const gastos = await Gasto.find({
         relations: ["tags", "moneda", "tarjeta"],
         where:
-            `(DATE_ADD(gasto.fecha, INTERVAL (gasto.cuotas) MONTH) >= '${fechaFormateada}'
-        AND fecha_cierre_resumen < '${fechaFormateada}'
+            `(DATE_ADD(gasto.fecha, INTERVAL (gasto.cuotas) MONTH) >= '${fecha}'
+        AND fecha_cierre_resumen < '${fecha}'
         AND gasto.fecha <= gasto.fecha_cierre_resumen) 
-        OR (DATE_ADD(gasto.fecha, INTERVAL (gasto.cuotas + 1) MONTH) >= '${fechaFormateada}' 
+        OR (DATE_ADD(gasto.fecha, INTERVAL (gasto.cuotas + 1) MONTH) >= '${fecha}' 
         AND fecha_cierre_resumen < '${unMesAntes}' 
         AND gasto.fecha > gasto.fecha_cierre_resumen)`
     })
@@ -88,6 +86,10 @@ async function run() {
 
 async function runBootstrap() {
     await bootstrap.run()
+}
+
+function formatearFecha(fecha: Date) {
+    return `${fecha.toISOString().slice(0, 10)} 00:00:00`
 }
 
 run()

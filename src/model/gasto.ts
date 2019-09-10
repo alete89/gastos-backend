@@ -34,12 +34,10 @@ export class Gasto extends BaseEntity {
     moneda: Moneda
     @Column()
     cuotas: number = 1
-    @Column({nullable: true})
+    @Column({ nullable: true })
     fecha: Date = new Date()
     @Column({ nullable: true })
-    fecha_cierre_resumen: Date
-    @Column()
-    mes_primer_resumen: number = this.fecha.getMonth() + 1
+    fecha_primer_resumen: Date
     @Column()
     paga_iva: boolean = false
     @Column()
@@ -55,11 +53,10 @@ export class Gasto extends BaseEntity {
     @Column({ nullable: true })
     comentario: string
 
-    setFechaCierreResumen() {
-        this.fecha_cierre_resumen = this.calcularFechaCierreResumen()
-    }
+    calcularFechaPrimerResumen() {
+        const fechaDeCierre = this.tarjeta.calcularfechaDeCierre(this.fecha.getFullYear(), this.fecha.getMonth())
+        this.fecha_primer_resumen = new Date(this.fecha.getFullYear(), this.fecha.getMonth() + 1, 1)
 
-    calcularFechaCierreResumen() {
-        return this.tarjeta.fechaDeCierre(this.fecha.getFullYear(), this.fecha.getMonth() + 1)
+        if (this.fecha > fechaDeCierre) this.fecha_primer_resumen.setMonth(this.fecha_primer_resumen.getMonth() + 1)
     }
 }

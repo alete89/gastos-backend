@@ -1,11 +1,11 @@
+import { ok } from "assert"
 import express, { Request, Response } from "express"
 import { createConnection } from "typeorm"
 import { Gasto } from "../model/gasto"
 import { Moneda } from "../model/moneda"
-import { Bootstrap } from "./bootstrap"
 import { Tag } from "../model/tag"
 import { Tarjeta } from "../model/tarjeta"
-import { ok } from "assert"
+import { Bootstrap } from "./bootstrap"
 
 // Create a new express application instance
 const app: express.Application = express()
@@ -36,17 +36,10 @@ app.get("/gastos", async function (req: Request, res: Response) {
 })
 
 app.put("/gastos/mes", async function (req: Request, res: Response) {
-    const fecha = formatearFecha(new Date(req.body.anio, req.body.mes, 1))
-    const unMesAntes = formatearFecha(new Date(req.body.anio, req.body.mes - 1, 1))
+    const fechaABuscar: string = formatearFecha(new Date(req.body.anio, req.body.mes, 1))
     const gastos = await Gasto.find({
         relations: ["tags", "moneda", "tarjeta"],
-        where:
-            `(DATE_ADD(gasto.fecha, INTERVAL (gasto.cuotas) MONTH) >= '${fecha}'
-        AND fecha_cierre_resumen < '${fecha}'
-        AND gasto.fecha <= gasto.fecha_cierre_resumen) 
-        OR (DATE_ADD(gasto.fecha, INTERVAL (gasto.cuotas + 1) MONTH) >= '${fecha}' 
-        AND fecha_cierre_resumen < '${unMesAntes}' 
-        AND gasto.fecha > gasto.fecha_cierre_resumen)`
+        where: `gasto.fecha_primer_resumen <= '${fechaABuscar}' AND DATE_ADD(gasto.fecha_primer_resumen, INTERVAL (gasto.cuotas - 1) MONTH) >= '${fechaABuscar}'`
     })
     res.send(gastos)
 })
@@ -67,7 +60,7 @@ app.post("/gasto", async function (req: Request, res: Response) {
         gasto.tarjeta = await Tarjeta.findOneOrFail(req.body.tarjeta)
         gasto.moneda = await Moneda.findOneOrFail(req.body.moneda)
         gasto.fecha = new Date(req.body.anio, req.body.mes, req.body.dia)
-        gasto.setFechaCierreResumen()
+        gasto.calcularFechaPrimerResumen()
         await gasto.save()
         res.send(ok)
     } catch (error) {

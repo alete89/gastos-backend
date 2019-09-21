@@ -49,6 +49,15 @@ app.get("/tags", async function (req: Request, res: Response) {
     res.send(tags)
 })
 
+app.put("/anios", async function (req: Request, res: Response) {
+    const response = await Tarjeta.query(
+        `SELECT MIN(YEAR(fecha_primer_resumen)) as desde, MAX(YEAR(DATE_ADD(fecha_primer_resumen, INTERVAL gasto.cuotas month))) as hasta 
+    from gasto
+    where tarjetaId = ${req.body.id_tarjeta}`)
+    const anios = getAnios(Number(response[0].desde), Number(response[0].hasta))
+    res.send(anios)
+})
+
 app.get("/tarjetas", async function (req: Request, res: Response) {
     const tarjetas = await Tarjeta.find({ relations: ["gastos"] })
     res.send(tarjetas)
@@ -83,6 +92,14 @@ async function runBootstrap() {
 
 function formatearFecha(fecha: Date) {
     return `${fecha.toISOString().slice(0, 10)} 00:00:00`
+}
+
+function getAnios(desde: number, hasta: number) {
+    let anios: Array<number> = []
+    for (var i = 0; i <= (hasta - desde); i++) {
+        anios.push(hasta + i)
+    }
+    return anios
 }
 
 run()

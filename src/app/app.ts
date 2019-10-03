@@ -39,7 +39,7 @@ app.put('/gastos/mes', async function(req: Request, res: Response) {
     const fechaABuscar: string = formatearFecha(new Date(req.body.anio, req.body.mes, 1))
     const gastos = await Gasto.find({
         relations: ['tags', 'moneda', 'tarjeta'],
-        where: `gasto.fecha_primer_resumen <= '${fechaABuscar}' AND DATE_ADD(gasto.fecha_primer_resumen, INTERVAL (gasto.cuotas - 1) MONTH) >= '${fechaABuscar}'
+        where: `fecha_primer_resumen <= '${fechaABuscar}' AND DATE_ADD(fecha_primer_resumen, INTERVAL (cuotas - 1) MONTH) >= '${fechaABuscar}'
         AND tarjetaId = ${req.body.id_tarjeta}`,
     })
     res.send(gastos)

@@ -1,11 +1,11 @@
-import { ok } from "assert"
-import express, { Request, Response } from "express"
-import { createConnection } from "typeorm"
-import { Gasto } from "../model/gasto"
-import { Moneda } from "../model/moneda"
-import { Tag } from "../model/tag"
-import { Tarjeta } from "../model/tarjeta"
-import { Bootstrap } from "./bootstrap"
+import { ok } from 'assert'
+import express, { Request, Response } from 'express'
+import { createConnection } from 'typeorm'
+import { Gasto } from '../model/gasto'
+import { Moneda } from '../model/moneda'
+import { Tag } from '../model/tag'
+import { Tarjeta } from '../model/tarjeta'
+import { Bootstrap } from './bootstrap'
 
 // Create a new express application instance
 const app: express.Application = express()
@@ -14,57 +14,58 @@ const bootstrap: Bootstrap = new Bootstrap()
 app.use(express.json()) // to support JSON-encoded bodies
 app.use(express.urlencoded()) // to support URL-encoded bodies
 
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*") // allow requests from any other server
-    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE") // allow these verbs
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Cache-Control")
+app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*') // allow requests from any other server
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE') // allow these verbs
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Cache-Control')
     next()
 })
 
-app.get("/", function (req, res) {
-    res.send("Welcome TEST")
+app.get('/', function(req, res) {
+    res.send('Welcome TEST')
 })
 
-app.get("/monedas", async function (req: Request, res: Response) {
+app.get('/monedas', async function(req: Request, res: Response) {
     const monedas = await Moneda.find()
     res.send(monedas)
 })
 
-app.get("/gastos", async function (req: Request, res: Response) {
-    const gastos = await Gasto.find({ relations: ["tags", "moneda", "tarjeta"] })
+app.get('/gastos', async function(req: Request, res: Response) {
+    const gastos = await Gasto.find({ relations: ['tags', 'moneda', 'tarjeta'] })
     res.send(gastos)
 })
 
-app.put("/gastos/mes", async function (req: Request, res: Response) {
+app.put('/gastos/mes', async function(req: Request, res: Response) {
     const fechaABuscar: string = formatearFecha(new Date(req.body.anio, req.body.mes, 1))
     const gastos = await Gasto.find({
-        relations: ["tags", "moneda", "tarjeta"],
+        relations: ['tags', 'moneda', 'tarjeta'],
         where: `gasto.fecha_primer_resumen <= '${fechaABuscar}' AND DATE_ADD(gasto.fecha_primer_resumen, INTERVAL (gasto.cuotas - 1) MONTH) >= '${fechaABuscar}'
-        AND tarjetaId = ${req.body.id_tarjeta}`
+        AND tarjetaId = ${req.body.id_tarjeta}`,
     })
     res.send(gastos)
 })
 
-app.get("/tags", async function (req: Request, res: Response) {
+app.get('/tags', async function(req: Request, res: Response) {
     const tags = await Tag.find()
     res.send(tags)
 })
 
-app.put("/anios", async function (req: Request, res: Response) {
+app.put('/anios', async function(req: Request, res: Response) {
     const response = await Tarjeta.query(
         `SELECT MIN(YEAR(fecha_primer_resumen)) as desde, MAX(YEAR(DATE_ADD(fecha_primer_resumen, INTERVAL gasto.cuotas month))) as hasta 
     from gasto
-    where tarjetaId = ${req.body.id_tarjeta}`)
+    where tarjetaId = ${req.body.id_tarjeta}`
+    )
     const anios = getAnios(Number(response[0].desde), Number(response[0].hasta))
     res.send(anios)
 })
 
-app.get("/tarjetas", async function (req: Request, res: Response) {
-    const tarjetas = await Tarjeta.find({ relations: ["gastos"] })
+app.get('/tarjetas', async function(req: Request, res: Response) {
+    const tarjetas = await Tarjeta.find({ relations: ['gastos'] })
     res.send(tarjetas)
 })
 
-app.post("/gasto", async function (req: Request, res: Response) {
+app.post('/gasto', async function(req: Request, res: Response) {
     try {
         const gasto = new Gasto(req.body)
         gasto.tarjeta = await Tarjeta.findOneOrFail(req.body.tarjeta)
@@ -79,8 +80,8 @@ app.post("/gasto", async function (req: Request, res: Response) {
     }
 })
 
-app.listen(3000, function () {
-    console.log("Example app listening on port 3000!")
+app.listen(3000, function() {
+    console.log('Example app listening on port 3000!')
 })
 
 async function run() {
@@ -97,12 +98,11 @@ function formatearFecha(fecha: Date) {
 
 function getAnios(desde: number, hasta: number) {
     let anios: Array<number> = []
-    for (var i = 0; i <= (hasta - desde); i++) {
+    for (var i = 0; i <= hasta - desde; i++) {
         anios.push(hasta + i)
     }
     return anios
 }
 
 run()
-    // .then(() => runBootstrap())
-
+// .then(() => runBootstrap())

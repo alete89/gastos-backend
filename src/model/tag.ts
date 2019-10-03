@@ -1,5 +1,5 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm"
-import { Gasto } from "./gasto"
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm'
+import { Gasto } from './gasto'
 
 @Entity()
 export class Tag extends BaseEntity {

@@ -8,10 +8,10 @@ import {
     ManyToMany,
     JoinTable,
     ManyToOne,
-} from "typeorm"
-import { Moneda } from "./moneda"
-import { Tag } from "./tag"
-import { Tarjeta } from "./tarjeta"
+} from 'typeorm'
+import { Moneda } from './moneda'
+import { Tag } from './tag'
+import { Tarjeta } from './tarjeta'
 
 @Entity()
 export class Gasto extends BaseEntity {
@@ -26,7 +26,7 @@ export class Gasto extends BaseEntity {
     @Column()
     producto: string
     @Column()
-    comercio: string = ""
+    comercio: string = ''
     @Column()
     monto_total: number = 0
     @ManyToOne(type => Moneda)

@@ -55,8 +55,8 @@ app.put('/anios', async function(req: Request, res: Response) {
         `SELECT MIN(YEAR(fecha_primer_resumen)) as desde,
                 MAX(YEAR(DATE_ADD(fecha_primer_resumen,
                 INTERVAL gasto.cuotas month))) as hasta 
-    from gasto
-    where tarjetaId = ${req.body.id_tarjeta}`
+        from gasto
+        where tarjetaId = ${req.body.id_tarjeta}`
     )
     const anios = getAnios(Number(response[0].desde), Number(response[0].hasta))
     res.send(anios)
@@ -99,9 +99,9 @@ function formatearFecha(fecha: Date) {
 }
 
 function getAnios(desde: number, hasta: number) {
-    let anios: Array<number> = []
-    for (var i = 0; i <= hasta - desde; i++) {
-        anios.push(hasta + i)
+    const anios: Array<number> = []
+    for (desde; desde <= hasta; desde++) {
+        anios.push(desde)
     }
     return anios
 }

@@ -74,6 +74,7 @@ app.post('/gasto', async function(req: Request, res: Response) {
         gasto.moneda = await Moneda.findOneOrFail(req.body.moneda)
         gasto.fecha = new Date(req.body.anio, req.body.mes, req.body.dia)
         gasto.calcularFechaPrimerResumen()
+        gasto.tags = await getSelectedTags(req.body.tags)
         await gasto.save()
         res.send(ok)
     } catch (error) {
@@ -104,6 +105,18 @@ function getAnios(desde: number, hasta: number) {
         anios.push(desde)
     }
     return anios
+}
+
+async function getSelectedTags(ids: Array<number>) {
+    const allTags = await Tag.find()
+    const selectedTags: Array<Tag> = []
+    ids.forEach(currentId => {
+        const foundTag = allTags.find(tag => tag.id == currentId)
+        if (foundTag) {
+            selectedTags.push(foundTag)
+        }
+    })
+    return selectedTags
 }
 
 run()

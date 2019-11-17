@@ -101,6 +101,22 @@ app.post('/gasto', async function(req: Request, res: Response) {
     }
 })
 
+/**
+ * Returns an array with three elements (last month, this month, next month)
+ * each one is an array with the sum of all the gastos of the month for each Credit card in the system
+ */
+app.get('/summary', async function(req: Request, res: Response) {
+    const tarjetas = await Tarjeta.find({ relations: ['gastos'] })
+    const hoy = new Date()
+    const meses = [
+        new Date(hoy.getFullYear(), hoy.getMonth() - 1, hoy.getDate()),
+        hoy,
+        new Date(hoy.getFullYear(), hoy.getMonth() + 1, hoy.getDate()),
+    ]
+    const result = meses.map(mes => tarjetas.map(tarjeta => [tarjeta.totalMes(mes.getFullYear(), mes.getMonth())]))
+    res.send(result)
+})
+
 app.listen(3000, function() {
     console.log('Gastos backend listening on port 3000!')
 })

@@ -49,4 +49,9 @@ export class Tarjeta extends BaseEntity {
         if (dia == 7) return 0
         else return dia
     }
+
+    totalMes(anio: number, mes: number) {
+        const gastosDelMes = this.gastos.filter(gasto => gasto.estaEnResumen(anio, mes))
+        return gastosDelMes.reduce((acum, gasto) => acum + gasto.monto_cuota, 0)
+    }
 }

@@ -36,6 +36,8 @@ export class Gasto extends BaseEntity {
     
     @Column()
     cuotas: number = 1
+    @Column()
+    monto_cuota: number = this.monto_total / this.cuotas
     @Column({ nullable: true })
     fecha: Date = new Date()
     @Column({ nullable: true })

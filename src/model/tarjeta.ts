@@ -12,9 +12,13 @@ export class Tarjeta extends BaseEntity {
     @Column()
     nombre: string
 
-    @OneToMany(type => Gasto, gasto => gasto.tarjeta, {
-        cascade: true,
-    })
+    @OneToMany(
+        type => Gasto,
+        gasto => gasto.tarjeta,
+        {
+            cascade: true,
+        }
+    )
     gastos: Gasto[]
 
     @Column({ nullable: true })

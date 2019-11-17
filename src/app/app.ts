@@ -64,16 +64,20 @@ app.post('/tags/new', async function(req: Request, res: Response) {
     }
 })
 
-app.put('/anios', async function(req: Request, res: Response) {
-    const response = await Tarjeta.query(
-        `SELECT MIN(YEAR(fecha_primer_resumen)) as desde,
-                MAX(YEAR(DATE_ADD(fecha_primer_resumen,
-                INTERVAL gasto.cuotas month))) as hasta 
-        from gasto
-        where tarjetaId = ${req.body.id_tarjeta}`
-    )
-    const anios = getAnios(Number(response[0].desde), Number(response[0].hasta))
-    res.send(anios)
+app.get('/anios/:id_tarjeta', async function(req: Request, res: Response) {
+    if (req.params.id_tarjeta) {
+        const response = await Tarjeta.query(
+            `SELECT MIN(YEAR(fecha_primer_resumen)) as desde,
+                    MAX(YEAR(DATE_ADD(fecha_primer_resumen,
+                    INTERVAL gasto.cuotas month))) as hasta 
+            from gasto
+            where tarjetaId = ${req.params.id_tarjeta}`
+        )
+        const anios = getAnios(Number(response[0].desde), Number(response[0].hasta))
+        res.send(anios)
+    } else {
+        res.sendStatus(400)
+    }
 })
 
 app.get('/tarjetas', async function(req: Request, res: Response) {

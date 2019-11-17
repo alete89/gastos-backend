@@ -9,7 +9,7 @@ import bodyParser from 'body-parser'
 
 // Create a new express application instance
 const app: express.Application = express()
-const bootstrap: Bootstrap = new Bootstrap()
+// const bootstrap: Bootstrap = new Bootstrap()
 
 app.use(express.json()) // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true })) // to support URL-encoded bodies
@@ -91,7 +91,6 @@ app.post('/gasto', async function(req: Request, res: Response) {
         gasto.tarjeta = await Tarjeta.findOneOrFail(req.body.tarjeta)
         gasto.moneda = await Moneda.findOneOrFail(req.body.moneda)
         gasto.fecha = new Date(req.body.anio, req.body.mes, req.body.dia)
-        gasto.calcularFechaPrimerResumen()
         gasto.tags = await getSelectedTags(req.body.tags)
         await gasto.save()
         res.sendStatus(200)
@@ -125,9 +124,9 @@ async function run() {
     await createConnection()
 }
 
-async function runBootstrap() {
-    await bootstrap.run()
-}
+// async function runBootstrap() {
+//     await bootstrap.run()
+// }
 
 function formatearFecha(fecha: Date) {
     return `${fecha.toISOString().slice(0, 10)} 00:00:00`

@@ -9,6 +9,7 @@ export class Bootstrap {
 
     chino: Tag = new Tag({ nombre: 'chino' })
     sube: Tag = new Tag({ nombre: 'sube' })
+    visa: Tarjeta = new Tarjeta({ nombre: 'visa', dia_regla_cierre_resumen: 4, semana_regla_cierre_resumen: 2 })
 
     picada: Gasto = new Gasto({
         producto: 'picada',
@@ -16,6 +17,7 @@ export class Bootstrap {
         moneda: this.peso,
         tags: [this.chino],
         fecha: new Date('7 July 2019'),
+        tarjeta: this.visa,
     })
     weird: Gasto = new Gasto({
         producto: 'raro',
@@ -23,17 +25,12 @@ export class Bootstrap {
         moneda: this.dolar,
         tags: [this.chino, this.sube],
         fecha: new Date('27 July 2019'),
+        tarjeta: this.visa,
     })
 
-    visa: Tarjeta = new Tarjeta({ nombre: 'visa', dia_regla_cierre_resumen: 4, semana_regla_cierre_resumen: 2 })
-
     async run() {
-        // this.picada.tarjeta = this.visa
-        // this.weird.tarjeta = this.visa
-        // this.picada.calcularFechaCierreResumen()
-        // this.weird.calcularFechaCierreResumen()
         await Moneda.save([this.peso, this.dolar])
-        // Gasto.save([this.picada, this.weird])
+        Gasto.save([this.picada, this.weird])
         await Tarjeta.save(this.visa)
     }
 }

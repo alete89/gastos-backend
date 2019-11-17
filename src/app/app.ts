@@ -1,4 +1,3 @@
-import { ok } from 'assert'
 import express, { Request, Response } from 'express'
 import { createConnection } from 'typeorm'
 import { Gasto } from '../model/gasto'
@@ -76,7 +75,7 @@ app.post('/gasto', async function(req: Request, res: Response) {
         gasto.calcularFechaPrimerResumen()
         gasto.tags = await getSelectedTags(req.body.tags)
         await gasto.save()
-        res.send(ok)
+        res.sendStatus(200)
     } catch (error) {
         res.sendStatus(400)
         console.log(error)

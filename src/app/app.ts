@@ -5,6 +5,7 @@ import { Moneda } from '../model/moneda'
 import { Tag } from '../model/tag'
 import { Tarjeta } from '../model/tarjeta'
 import { Bootstrap } from './bootstrap'
+import bodyParser from 'body-parser'
 
 // Create a new express application instance
 const app: express.Application = express()
@@ -47,6 +48,20 @@ app.put('/gastos/mes', async function(req: Request, res: Response) {
 app.get('/tags', async function(req: Request, res: Response) {
     const tags = await Tag.find()
     res.send(tags)
+})
+
+app.post('/tags/new', async function(req: Request, res: Response) {
+    if (req.body.nombre) {
+        const tag = new Tag({ nombre: req.body.nombre })
+        try {
+            await Tag.insert(tag)
+            res.sendStatus(200)
+        } catch {
+            res.sendStatus(500)
+        }
+    } else {
+        res.sendStatus(400)
+    }
 })
 
 app.put('/anios', async function(req: Request, res: Response) {

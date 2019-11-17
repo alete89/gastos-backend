@@ -63,4 +63,11 @@ export class Gasto extends BaseEntity {
 
         if (this.fecha > fechaDeCierre) this.fecha_primer_resumen.setMonth(this.fecha_primer_resumen.getMonth() + 1)
     }
+
+    estaEnResumen(anio: number, mes: number) {
+        const fecha = new Date(anio, mes, 1)
+        const fecha_ultimo_resumen = new Date(this.fecha_primer_resumen)
+        fecha_ultimo_resumen.setMonth(this.fecha_primer_resumen.getMonth() + this.cuotas - 1)
+        return fecha >= this.fecha_primer_resumen && fecha <= fecha_ultimo_resumen
+    }
 }

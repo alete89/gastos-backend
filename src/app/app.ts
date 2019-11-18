@@ -112,8 +112,20 @@ app.get('/summary', async function (req: Request, res: Response) {
         hoy,
         new Date(hoy.getFullYear(), hoy.getMonth() + 1, hoy.getDate()),
     ]
-    const result = tarjetas.map(tarjeta => new Summary(tarjeta.nombre, meses.map(mes => tarjeta.totalMes(mes.getFullYear(), mes.getMonth()))))
-    res.send(result)
+    const result = tarjetas.map(
+        tarjeta =>
+            new Summary(
+                tarjeta.nombre,
+                meses.map(mes => tarjeta.totalMes(mes.getFullYear(), mes.getMonth()))
+            )
+    )
+
+    const response = {
+        tarjetas: result,
+        subtotales: meses.map((mes, index) => result.reduce((acum, tarjeta) => acum + tarjeta.totales[index], 0)),
+    }
+
+    res.send(response)
 })
 
 app.listen(3000, function () {

@@ -1,14 +1,4 @@
-import {
-    BaseEntity,
-    Column,
-    Entity,
-    JoinColumn,
-    OneToOne,
-    PrimaryGeneratedColumn,
-    ManyToMany,
-    JoinTable,
-    ManyToOne,
-} from 'typeorm'
+import { BaseEntity, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { Moneda } from './moneda'
 import { Tag } from './tag'
 import { Tarjeta } from './tarjeta'
@@ -18,8 +8,10 @@ export class Gasto extends BaseEntity {
     constructor(init?: Partial<Gasto>) {
         super()
         Object.assign(this, init)
-        if (init && init.tarjeta) {
+        if (init && init.tarjeta && init.fecha) {
             this.tarjeta = Object.assign(new Tarjeta(), init.tarjeta)
+            this.fecha = new Date(init.fecha)
+            this.monto_cuota = this.monto_total / this.cuotas
             this.setFechaPrimerResumen()
         }
     }
@@ -40,8 +32,8 @@ export class Gasto extends BaseEntity {
 
     @Column()
     cuotas: number = 1
-    @Column()
-    monto_cuota: number = this.monto_total / this.cuotas
+    @Column("decimal", { precision: 13, scale: 2 })
+    monto_cuota: number
     @Column({ nullable: true })
     fecha: Date = new Date()
     @Column({ nullable: true })

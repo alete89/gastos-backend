@@ -2,11 +2,10 @@ import express, { Request, Response } from 'express'
 import { createConnection } from 'typeorm'
 import { Gasto } from '../model/gasto'
 import { Moneda } from '../model/moneda'
+import { Summary } from '../model/summary'
 import { Tag } from '../model/tag'
 import { Tarjeta } from '../model/tarjeta'
 import { Bootstrap } from './bootstrap'
-import bodyParser from 'body-parser'
-import { Sumary } from '../model/sumary'
 
 // Create a new express application instance
 const app: express.Application = express()
@@ -113,7 +112,7 @@ app.get('/summary', async function (req: Request, res: Response) {
         hoy,
         new Date(hoy.getFullYear(), hoy.getMonth() + 1, hoy.getDate()),
     ]
-    const result = meses.map(mes => tarjetas.map(tarjeta => [tarjeta.totalMes(mes.getFullYear(), mes.getMonth())]))
+    const result = tarjetas.map(tarjeta => new Summary(tarjeta.nombre, meses.map(mes => tarjeta.totalMes(mes.getFullYear(), mes.getMonth()))))
     res.send(result)
 })
 

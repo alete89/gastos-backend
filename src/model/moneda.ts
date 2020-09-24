@@ -2,15 +2,17 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
 
 @Entity()
 export class Moneda extends BaseEntity {
-    constructor(init?: Partial<Moneda>) {
-        super()
-        Object.assign(this, init)
-    }
+  constructor(init?: Partial<Moneda>) {
+    super()
+    Object.assign(this, init)
+  }
 
-    @PrimaryGeneratedColumn()
-    id: number
-    @Column()
-    nombre: string
-    @Column({ nullable: false })
-    cotizacion: number = 1
+  @PrimaryGeneratedColumn()
+  id: number
+
+  @Column()
+  nombre: string
+
+  @Column({ nullable: false })
+  cotizacion: number = 1
 }

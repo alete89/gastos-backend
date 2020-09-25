@@ -1,7 +1,7 @@
+import { compare, hash } from 'bcryptjs'
 import { User } from '../../model/User'
-import { hash, compare } from 'bcryptjs'
-import { LoginResponse } from './types'
 import { createAccessToken, createRefreshToken } from './auth'
+import { LoginResponse } from './types'
 
 export const register = async (email: string, password: string): Promise<Boolean> => {
   try {

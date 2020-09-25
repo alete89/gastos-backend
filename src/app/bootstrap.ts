@@ -1,6 +1,6 @@
+import { Gasto } from '../model/gasto'
 import { Moneda } from '../model/moneda'
 import { Tag } from '../model/tag'
-import { Gasto } from '../model/gasto'
 import { Tarjeta } from '../model/tarjeta'
 
 export class Bootstrap {

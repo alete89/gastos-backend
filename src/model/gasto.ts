@@ -1,5 +1,4 @@
-import { JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { BaseEntity, Column, Entity, JoinColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { Moneda } from './moneda'
 import { Tag } from './tag'
 import { Tarjeta } from './tarjeta'

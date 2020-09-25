@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, OneToMany, Entity } from 'typeorm'
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { Gasto } from './gasto'
 
 @Entity()

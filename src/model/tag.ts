@@ -14,6 +14,6 @@ export class Tag extends BaseEntity {
   @Column()
   nombre: string
 
-  @ManyToMany((type) => Gasto, (gasto) => gasto.tags)
+  @ManyToMany(type => Gasto, gasto => gasto.tags)
   gastos: Gasto[]
 }

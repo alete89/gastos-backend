@@ -14,7 +14,7 @@ export class Tarjeta extends BaseEntity {
   @Column()
   nombre: string
 
-  @OneToMany((type) => Gasto, (gasto) => gasto.tarjeta, {
+  @OneToMany(type => Gasto, gasto => gasto.tarjeta, {
     cascade: true,
   })
   gastos: Gasto[]
@@ -53,7 +53,7 @@ export class Tarjeta extends BaseEntity {
   }
 
   totalMes(anio: number, mes: number) {
-    const gastosDelMes = this.gastos.filter((gasto) => gasto.estaEnResumen(anio, mes))
+    const gastosDelMes = this.gastos.filter(gasto => gasto.estaEnResumen(anio, mes))
     return gastosDelMes.reduce((acum, gasto) => acum + Number(gasto.monto_cuota), 0)
   }
 }

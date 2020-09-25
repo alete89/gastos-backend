@@ -82,7 +82,9 @@ declare module 'express-serve-static-core' {
   app.post('/revoke-refresh', async (req, res) => {
     const userId = req.body.userId
 
-    await getConnection().getRepository(User).increment({ id: userId }, 'tokenVersion', 1)
+    await getConnection()
+      .getRepository(User)
+      .increment({ id: userId }, 'tokenVersion', 1)
 
     res.send(true)
   })

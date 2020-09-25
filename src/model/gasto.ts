@@ -29,7 +29,7 @@ export class Gasto extends BaseEntity {
   @Column()
   monto_total: number = 0
 
-  @ManyToOne((type) => Moneda)
+  @ManyToOne(type => Moneda)
   @JoinColumn()
   moneda: Moneda
 
@@ -51,13 +51,13 @@ export class Gasto extends BaseEntity {
   @Column()
   monto_iva: number = 0
 
-  @ManyToMany((type) => Tag, (tag) => tag.gastos, {
+  @ManyToMany(type => Tag, tag => tag.gastos, {
     cascade: true,
   })
   @JoinTable()
   tags: Tag[]
 
-  @ManyToOne((type) => Tarjeta, (tarjeta) => tarjeta.gastos, { nullable: true })
+  @ManyToOne(type => Tarjeta, tarjeta => tarjeta.gastos, { nullable: true })
   tarjeta: Tarjeta
 
   @Column({ nullable: true })

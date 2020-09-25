@@ -7,7 +7,7 @@ services:
       - 9000:9000
     depends_on:
       - mysql
-    volumes: 
+    volumes:
       - ./src:/usr/src/gastos/src
     restart: always
 

@@ -8,21 +8,21 @@ import { formatearFecha, getSelectedTags, getAnios } from '../lib/helpers'
 
 export const routes = require('express').Router()
 
-routes.get('/', function (req: Request, res: Response) {
+routes.get('/', function(req: Request, res: Response) {
   res.send('Welcome TEST')
 })
 
-routes.get('/monedas', async function (req: Request, res: Response) {
+routes.get('/monedas', async function(req: Request, res: Response) {
   const monedas = await Moneda.find()
   res.send(monedas)
 })
 
-routes.get('/gastos', async function (req: Request, res: Response) {
+routes.get('/gastos', async function(req: Request, res: Response) {
   const gastos = await Gasto.find({ relations: ['tags', 'moneda', 'tarjeta'] })
   res.send(gastos)
 })
 
-routes.put('/gastos/mes', async function (req: Request, res: Response) {
+routes.put('/gastos/mes', async function(req: Request, res: Response) {
   const fechaABuscar: string = formatearFecha(new Date(req.body.anio, req.body.mes, 1))
   const gastos = await Gasto.find({
     relations: ['tags', 'moneda', 'tarjeta'],
@@ -32,12 +32,12 @@ routes.put('/gastos/mes', async function (req: Request, res: Response) {
   res.send(gastos)
 })
 
-routes.get('/tags', async function (req: Request, res: Response) {
+routes.get('/tags', async function(req: Request, res: Response) {
   const tags = await Tag.find()
   res.send(tags)
 })
 
-routes.post('/tags/new', async function (req: Request, res: Response) {
+routes.post('/tags/new', async function(req: Request, res: Response) {
   if (req.body.nombre) {
     const tag = new Tag({ nombre: req.body.nombre })
     try {
@@ -51,7 +51,7 @@ routes.post('/tags/new', async function (req: Request, res: Response) {
   }
 })
 
-routes.get('/anios/:id_tarjeta', async function (req: Request, res: Response) {
+routes.get('/anios/:id_tarjeta', async function(req: Request, res: Response) {
   if (req.params.id_tarjeta) {
     const response = await Tarjeta.query(
       `SELECT MIN(YEAR(fecha_primer_resumen)) as desde,
@@ -67,12 +67,12 @@ routes.get('/anios/:id_tarjeta', async function (req: Request, res: Response) {
   }
 })
 
-routes.get('/tarjetas', async function (req: Request, res: Response) {
+routes.get('/tarjetas', async function(req: Request, res: Response) {
   const tarjetas = await Tarjeta.find({ relations: ['gastos'] })
   res.send(tarjetas)
 })
 
-routes.post('/gasto', async function (req: Request, res: Response) {
+routes.post('/gasto', async function(req: Request, res: Response) {
   try {
     const gasto = new Gasto(req.body)
     gasto.tarjeta = await Tarjeta.findOneOrFail(req.body.tarjeta)
@@ -91,7 +91,7 @@ routes.post('/gasto', async function (req: Request, res: Response) {
  * Returns an array with three elements (last month, this month, next month)
  * each one is an array with the sum of all the gastos of the month for each Credit card in the system
  */
-routes.get('/summary', async function (req: Request, res: Response) {
+routes.get('/summary', async function(req: Request, res: Response) {
   const tarjetas = await Tarjeta.find({ relations: ['gastos'] })
   const hoy = new Date()
   const meses = [
@@ -100,11 +100,7 @@ routes.get('/summary', async function (req: Request, res: Response) {
     new Date(hoy.getFullYear(), hoy.getMonth() + 1, hoy.getDate()),
   ]
   const result = tarjetas.map(
-    (tarjeta) =>
-      new Summary(
-        tarjeta.nombre,
-        meses.map((mes) => tarjeta.totalMes(mes.getFullYear(), mes.getMonth()))
-      )
+    tarjeta => new Summary(tarjeta.nombre, meses.map(mes => tarjeta.totalMes(mes.getFullYear(), mes.getMonth())))
   )
 
   const response = {

@@ -1,5 +1,7 @@
+import cors from 'cors'
 import express from 'express'
 import { createConnection } from 'typeorm'
+import authRoutes from './auth/routes'
 import { Bootstrap } from './bootstrap'
 import { routes } from './routes'
 
@@ -9,17 +11,12 @@ const bootstrap: Bootstrap = new Bootstrap()
 
 app.use(express.json()) // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true })) // to support URL-encoded bodies
-
-app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*') // allow requests from any other server
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE') // allow these verbs
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Cache-Control')
-  next()
-})
+app.use(cors())
 
 app.use(routes)
+app.use(authRoutes)
 
-app.listen(9000, function() {
+app.listen(9000, function () {
   console.log('Gastos backend listening on port 9000!')
 })
 

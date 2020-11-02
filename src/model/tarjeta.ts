@@ -1,5 +1,6 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { Gasto } from './gasto'
+import { User } from './user'
 
 @Entity()
 export class Tarjeta extends BaseEntity {
@@ -11,10 +12,13 @@ export class Tarjeta extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
+  @ManyToOne((type) => User, (user) => user.tarjeta)
+  user: User
+
   @Column()
   nombre: string
 
-  @OneToMany(type => Gasto, gasto => gasto.tarjeta, {
+  @OneToMany((type) => Gasto, (gasto) => gasto.tarjeta, {
     cascade: true,
   })
   gastos: Gasto[]
@@ -53,7 +57,7 @@ export class Tarjeta extends BaseEntity {
   }
 
   totalMes(anio: number, mes: number) {
-    const gastosDelMes = this.gastos.filter(gasto => gasto.estaEnResumen(anio, mes))
+    const gastosDelMes = this.gastos.filter((gasto) => gasto.estaEnResumen(anio, mes))
     return gastosDelMes.reduce((acum, gasto) => acum + Number(gasto.monto_cuota), 0)
   }
 }

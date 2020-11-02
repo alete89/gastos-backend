@@ -1,5 +1,5 @@
 import { compare, hash } from 'bcryptjs'
-import { User } from '../../model/User'
+import { User } from '../../model/user'
 import { createAccessToken, createRefreshToken } from './auth'
 import { LoginResponse } from './types'
 
@@ -31,7 +31,8 @@ export const login = async (email: string, password: string): Promise<LoginRespo
     }
   } catch (error) {
     console.log(error)
-    return { accessToken: '', refreshToken: '' }
+    // return { accessToken: '', refreshToken: '' }
+    throw error
   }
 }
 

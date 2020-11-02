@@ -4,7 +4,7 @@ import { Router } from 'express'
 import { verify } from 'jsonwebtoken'
 import 'reflect-metadata'
 import { getConnection } from 'typeorm'
-import { User } from '../../model/User'
+import { User } from '../../model/user'
 import { createAccessToken, createRefreshToken, isLoggedIn } from './auth'
 import { login, register } from './authService'
 import { sendRefreshToken } from './sendRefreshToken'
@@ -28,10 +28,14 @@ routes.post('/register', async (req, res) => {
 
 routes.post('/login', async (req, res) => {
   const { body } = req
-  const result = await login(body.email, body.password)
+  try {
+    const result = await login(body.email, body.password)
 
-  sendRefreshToken(res, result.refreshToken)
-  res.status(200).json(result.accessToken)
+    sendRefreshToken(res, result.refreshToken)
+    res.status(200).json(result.accessToken)
+  } catch (error) {
+    res.status(401).json(error)
+  }
 })
 
 routes.get('/validate', isLoggedIn, async (req, res) => {
@@ -41,6 +45,7 @@ routes.get('/validate', isLoggedIn, async (req, res) => {
 
 routes.post('/refresh_token', cookieParser(), async (req, res) => {
   //isLoggedIn ?
+  console.log('refresh invoked')
   const token = req.cookies.uid
   if (!token) {
     return res.send({ ok: false, accessToken: '' })
@@ -67,7 +72,7 @@ routes.post('/refresh_token', cookieParser(), async (req, res) => {
 
   sendRefreshToken(res, createRefreshToken(user))
 
-  return res.send({ ok: true, accesToken: createAccessToken(user) })
+  return res.send({ ok: true, accessToken: createAccessToken(user) })
 })
 
 routes.post('/revoke-refresh', async (req, res) => {

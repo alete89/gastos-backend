@@ -1,5 +1,5 @@
 import { sign, verify } from 'jsonwebtoken'
-import { User } from '../../model/User'
+import { User } from '../../model/user'
 
 export const createAccessToken = (user: User) => {
   return sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET!, { expiresIn: '15m' })

@@ -75,11 +75,12 @@ routes.get('/tarjetas', async function (req: Request, res: Response) {
 
 routes.post('/gasto', async function (req: Request, res: Response) {
   try {
-    const gasto = new Gasto(req.body)
-    gasto.tarjeta = await Tarjeta.findOneOrFail(req.body.tarjeta)
-    gasto.moneda = await Moneda.findOneOrFail(req.body.moneda)
-    gasto.fecha = new Date(req.body.anio, req.body.mes, req.body.dia)
-    gasto.tags = await getSelectedTags(req.body.tags)
+    const { body } = req
+    const gasto = new Gasto(body)
+    gasto.tarjeta = await Tarjeta.findOneOrFail(body.tarjeta)
+    gasto.moneda = await Moneda.findOneOrFail(body.moneda)
+    gasto.fecha = new Date(body.fecha)
+    gasto.tags = await getSelectedTags(body.tags)
     await gasto.save()
     res.sendStatus(200)
   } catch (error) {

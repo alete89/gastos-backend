@@ -2,11 +2,11 @@ FROM node:lts-alpine
 
 WORKDIR /usr/src/gastos
 
-COPY package.json .
+COPY ["package.json", "package-lock.json", "/usr/src/gastos/"]
 
 RUN npm install
 
-ADD . /usr/src/gastos
+COPY [".", "/usr/src/gastos"]
 
 CMD [ "npm", "run", "dev" ]
 

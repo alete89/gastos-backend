@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Tarjeta } from './tarjeta'
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -14,4 +15,7 @@ export class User extends BaseEntity {
 
   @Column({ default: 0 })
   tokenVersion: number
+
+  @OneToMany((type) => Tarjeta, (tarjeta) => tarjeta.user)
+  tarjeta: Tarjeta[]
 }

@@ -1,4 +1,4 @@
-module.exports = {
+const ormConfig = {
   type: 'mysql',
   host: 'mysql',
   port: 3306,
@@ -8,3 +8,5 @@ module.exports = {
   synchronize: true,
   entities: ['src/model/*{.ts, .js}'],
 }
+
+export = ormConfig

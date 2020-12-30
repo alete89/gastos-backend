@@ -49,3 +49,24 @@ export const getAllUsers = async (): Promise<User[]> => {
     return []
   }
 }
+
+export const getUserFromRequest = async (token: string): Promise<User> => {
+  if (!token) {
+    throw 'unauthorized?'
+  }
+  let payload: any = null
+  try {
+    payload = verify(token, process.env.REFRESH_TOKEN_SECRET!)
+  } catch (error) {
+    console.log(error)
+    throw 'unauthorized?'
+  }
+
+  const user = await User.findOne({ select: ['id', 'email'], where: { id: payload.userId } })
+
+  if (!user) {
+    throw 'user does not exist?'
+  }
+
+  return user
+}

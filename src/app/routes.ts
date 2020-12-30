@@ -5,7 +5,7 @@ import { Moneda } from '../model/moneda'
 import { Summary } from '../model/summary'
 import { Tag } from '../model/tag'
 import { Tarjeta } from '../model/tarjeta'
-import { getAllUsers } from './auth/authService'
+import { getAllUsers, getUserFromRequest } from './auth/authService'
 
 export const routes = require('express').Router()
 
@@ -69,7 +69,9 @@ routes.get('/anios/:id_tarjeta', async function (req: Request, res: Response) {
 })
 
 routes.get('/tarjetas', async function (req: Request, res: Response) {
-  const tarjetas = await Tarjeta.find({ relations: ['gastos'] })
+  // const tarjetas = await Tarjeta.find({ relations: ['gastos'] }) // para qué quería los gastos acá?
+  const requestingUser = await getUserFromRequest(req.cookies.uid)
+  const tarjetas = await Tarjeta.find({ where: { user: requestingUser } })
   res.send(tarjetas)
 })
 

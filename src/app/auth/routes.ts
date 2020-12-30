@@ -1,4 +1,3 @@
-import cookieParser from 'cookie-parser'
 import 'dotenv/config'
 import { Router } from 'express'
 import { verify } from 'jsonwebtoken'
@@ -20,10 +19,10 @@ const routes = Router()
 routes.post('/register', async (req, res) => {
   const { body } = req
   const result = await register(body.email, body.password)
-  if (result) {
-    return res.status(200).send('ok')
+  if (result.ok) {
+    return res.status(200).json('ok')
   }
-  return res.status(400).send('error: user existed?')
+  return res.status(400).json(result.message)
 })
 
 routes.post('/login', async (req, res) => {
@@ -43,7 +42,7 @@ routes.get('/validate', isLoggedIn, async (req, res) => {
   res.send(req.payload)
 })
 
-routes.post('/refresh_token', cookieParser(), async (req, res) => {
+routes.post('/refresh_token', async (req, res) => {
   //isLoggedIn ?
   console.log('refresh invoked')
   const token = req.cookies.uid

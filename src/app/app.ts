@@ -5,14 +5,16 @@ import { createConnection } from 'typeorm'
 import authRoutes from './auth/routes'
 import { Bootstrap } from './bootstrap'
 import { routes } from './routes'
+import cookieParser from 'cookie-parser'
 
 // Create a new express application instance
 const app: express.Application = express()
 const bootstrap: Bootstrap = new Bootstrap()
 
+app.use(cookieParser()) // access to cookies
 app.use(express.json()) // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true })) // to support URL-encoded bodies
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
+app.use(cors({ credentials: true, origin: 'http://localhost:5000' }))
 
 app.use(routes)
 app.use(authRoutes)
@@ -22,7 +24,8 @@ app.listen(9000, function () {
 })
 
 async function run() {
-  await createConnection()
+  const connection = await createConnection()
+  await connection.synchronize(true)
 }
 
 async function runBootstrap() {

@@ -11,8 +11,7 @@ export const createRefreshToken = (user: User) => {
 }
 
 export const isLoggedIn = (req: any, _: any, next: any) => {
-  const { headers } = req
-  const { authorization } = headers
+  const { authorization } = req.headers
 
   if (!authorization) {
     throw new Error('not authenticated')

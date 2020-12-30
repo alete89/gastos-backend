@@ -62,7 +62,7 @@ export const getUserFromRequest = async (token: string): Promise<User> => {
     throw 'unauthorized?'
   }
 
-  const user = await User.findOne({ select: ['id', 'email'], where: { id: payload.userId } })
+  const user = await User.findOne({ id: payload.userId })
 
   if (!user) {
     throw 'user does not exist?'

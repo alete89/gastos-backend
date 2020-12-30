@@ -3,6 +3,11 @@ import { Tarjeta } from './tarjeta'
 
 @Entity('users')
 export class User extends BaseEntity {
+  constructor(init?: Partial<User>) {
+    super()
+    Object.assign(this, init)
+  }
+
   @PrimaryGeneratedColumn()
   id: number
 
@@ -16,6 +21,6 @@ export class User extends BaseEntity {
   @Column({ default: 0 })
   tokenVersion: number
 
-  @OneToMany((type) => Tarjeta, (tarjeta) => tarjeta.user)
+  @OneToMany((type) => Tarjeta, (tarjeta) => tarjeta.user, { cascade: true })
   tarjeta: Tarjeta[]
 }

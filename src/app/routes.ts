@@ -24,11 +24,12 @@ routes.get('/gastos', async function (req: Request, res: Response) {
 })
 
 routes.put('/gastos/mes', async function (req: Request, res: Response) {
-  const fechaABuscar: string = formatearFecha(new Date(req.body.anio, req.body.mes, 1))
+  const { anio, mes, id_tarjeta } = req.body
+  const fechaABuscar: string = formatearFecha(new Date(anio, mes, 1))
   const gastos = await Gasto.find({
     relations: ['tags', 'moneda', 'tarjeta'],
     where: `fecha_primer_resumen <= '${fechaABuscar}' AND DATE_ADD(fecha_primer_resumen, INTERVAL (cuotas - 1) MONTH) >= '${fechaABuscar}'
-        AND tarjetaId = ${req.body.id_tarjeta}`,
+        AND tarjetaId = ${id_tarjeta}`,
   })
   res.send(gastos)
 })
@@ -70,6 +71,7 @@ routes.get('/anios/:id_tarjeta', async function (req: Request, res: Response) {
 
 routes.get('/tarjetas', async function (req: Request, res: Response) {
   // const tarjetas = await Tarjeta.find({ relations: ['gastos'] }) // para qué quería los gastos acá?
+  console.log('pide tarjetas')
   const requestingUser = await getUserFromRequest(req.cookies.uid)
   const tarjetas = await Tarjeta.find({ where: { user: requestingUser } })
   res.send(tarjetas)

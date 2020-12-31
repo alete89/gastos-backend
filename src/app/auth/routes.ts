@@ -82,4 +82,10 @@ routes.post('/revoke-refresh', async (req, res) => {
   res.send(true)
 })
 
+routes.post('/logout', async (req, res) => {
+  sendRefreshToken(res, '')
+
+  res.send(true)
+})
+
 export default routes

@@ -5,8 +5,8 @@ import 'mocha'
 
 describe('un gasto de 3 cuotas en junio', () => {
   const tarjeta = new Tarjeta()
-  tarjeta.dia_regla_cierre_resumen = 4 // jueves
-  tarjeta.semana_regla_cierre_resumen = 4 // cuarta semana
+  tarjeta.diaCierre = 4 // jueves
+  tarjeta.semanaCierre = 4 // cuarta semana
 
   const compra = new Gasto({
     cuotas: 3,

@@ -24,23 +24,23 @@ export class Tarjeta extends BaseEntity {
   gastos: Gasto[]
 
   @Column({ nullable: true })
-  dia_regla_cierre_resumen: number // día dentro de la semana 1-7 (LUNES -> 1)
+  diaCierre: number // día dentro de la semana 1-7 (LUNES -> 1)
 
   @Column({ nullable: true })
-  semana_regla_cierre_resumen: number // semana dentro de un mes 1-4
+  semanaCierre: number // semana dentro de un mes 1-4
 
   @Column({ nullable: true })
-  dia_regla_vencimiento: number // día dentro de la semana 1-7 (LUNES -> 1)
+  diaVencimiento: number // día dentro de la semana 1-7 (LUNES -> 1)
 
   @Column({ nullable: true })
-  semana_regla_vencimiento: number // semana dentro de un mes 1-4
+  semanaVencimiento: number // semana dentro de un mes 1-4
 
   calcularfechaDeCierre(anio: number, mes: number) {
     let fecha = new Date(anio, mes, 1, 23, 59, 59)
     fecha.setDate(
       1 +
-        7 * (this.semana_regla_cierre_resumen - 1) +
-        this.ajusteDia(this.getDayFrom0To6(this.dia_regla_cierre_resumen) - fecha.getDay())
+        7 * (this.semanaCierre - 1) +
+        this.ajusteDia(this.getDayFrom0To6(this.diaCierre) - fecha.getDay())
     )
     if (fecha.getMonth() > mes) fecha.setDate(fecha.getDate() - 7) //EN EL CASO DE QUE LA REGLA SEA LA 5TA SEMANA Y ESE DIA TIENE SOLO 4 EN ESE MES, LE RESTA 7 DIAS PARA DEVOLVER EL 4TO.
     return fecha

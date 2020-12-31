@@ -4,8 +4,8 @@ import 'mocha'
 
 describe('el cuarto jueves de septiembre 2019', () => {
   const tarjeta = new Tarjeta()
-  tarjeta.dia_regla_cierre_resumen = 4 // jueves
-  tarjeta.semana_regla_cierre_resumen = 4 // cuarta semana
+  tarjeta.diaCierre = 4 // jueves
+  tarjeta.semanaCierre = 4 // cuarta semana
 
   it('debe ser el 26 de septiembre', () => {
     const result = tarjeta.calcularfechaDeCierre(2019, 8) // septiembre (Enero es 0)
@@ -15,8 +15,8 @@ describe('el cuarto jueves de septiembre 2019', () => {
 
 describe('el primer lunes de febrero 2019', () => {
   const tarjeta = new Tarjeta()
-  tarjeta.dia_regla_cierre_resumen = 1 // lunes
-  tarjeta.semana_regla_cierre_resumen = 1 // primera semana
+  tarjeta.diaCierre = 1 // lunes
+  tarjeta.semanaCierre = 1 // primera semana
 
   it('debe ser el 4 de febrero', () => {
     const result = tarjeta.calcularfechaDeCierre(2019, 1) // febrero (Enero es 0)

@@ -15,20 +15,20 @@ export class Bootstrap {
   sube: Tag = new Tag({ nombre: 'sube' })
   visa: Tarjeta = new Tarjeta({
     nombre: 'visa',
-    dia_regla_cierre_resumen: 4,
-    semana_regla_cierre_resumen: 2,
+    diaCierre: 4,
+    semanaCierre: 2,
     user: this.alete,
   })
   master: Tarjeta = new Tarjeta({
     nombre: 'master',
-    dia_regla_cierre_resumen: 3,
-    semana_regla_cierre_resumen: 1,
+    diaCierre: 3,
+    semanaCierre: 1,
     user: this.alete,
   })
   american: Tarjeta = new Tarjeta({
     nombre: 'american',
-    dia_regla_cierre_resumen: 3,
-    semana_regla_cierre_resumen: 1,
+    diaCierre: 3,
+    semanaCierre: 1,
     user: this.asd,
   })
 

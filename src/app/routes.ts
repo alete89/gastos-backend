@@ -93,6 +93,19 @@ routes.post('/gasto', async function (req: Request, res: Response) {
   }
 })
 
+routes.post('/tarjeta', async function (req: Request, res: Response) {
+  try {
+    const { body } = req
+    const user = await getUserFromRequest(req.cookies.uid)
+    const tarjeta = new Tarjeta({ ...body, user })
+    await tarjeta.save()
+    res.sendStatus(200)
+  } catch (error) {
+    res.sendStatus(400)
+    console.log(error)
+  }
+})
+
 /**
  * Returns an array with three elements (last month, this month, next month)
  * each one is an array with the sum of all the gastos of the month for each Credit card in the system

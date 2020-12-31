@@ -111,7 +111,8 @@ routes.post('/tarjeta', async function (req: Request, res: Response) {
  * each one is an array with the sum of all the gastos of the month for each Credit card in the system
  */
 routes.get('/summary', async function (req: Request, res: Response) {
-  const tarjetas = await Tarjeta.find({ relations: ['gastos'] })
+  const user = await getUserFromRequest(req.cookies.uid)
+  const tarjetas = await Tarjeta.find({ relations: ['gastos'], where: { user } })
   const hoy = new Date()
   const meses = [
     new Date(hoy.getFullYear(), hoy.getMonth() - 1, hoy.getDate()),

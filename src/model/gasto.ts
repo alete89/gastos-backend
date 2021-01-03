@@ -8,9 +8,8 @@ export class Gasto extends BaseEntity {
   constructor(init?: Partial<Gasto>) {
     super()
     Object.assign(this, init)
-    if (init && init.tarjeta && init.fecha) {
+    if (init && init.tarjeta) {
       this.tarjeta = Object.assign(new Tarjeta(), init.tarjeta)
-      this.fecha = new Date(init.fecha)
       this.monto_cuota = this.monto_total / this.cuotas
       this.setFechaPrimerResumen()
     }
@@ -38,10 +37,10 @@ export class Gasto extends BaseEntity {
   @Column('decimal', { precision: 13, scale: 2 })
   monto_cuota: number
 
-  @Column({ nullable: true })
+  @Column({ type:"date", nullable: true })
   fecha: Date = new Date()
 
-  @Column({ nullable: true })
+  @Column({ type:"date", nullable: true })
   fecha_primer_resumen: Date
 
   @Column()

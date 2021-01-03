@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { formatearFecha, getAnios, getSelectedTags } from '../lib/helpers'
+import { formatearFecha, getAnios, getSelectedTags, toDate } from '../lib/helpers'
 import { Gasto } from '../model/gasto'
 import { Moneda } from '../model/moneda'
 import { Summary } from '../model/summary'
@@ -80,6 +80,7 @@ routes.get('/tarjetas', async function (req: Request, res: Response) {
 routes.post('/gasto', async function (req: Request, res: Response) {
   try {
     const { body } = req
+    body.fecha = body.fecha ? toDate(body.fecha) : body.fecha
     const gasto = new Gasto(body)
     gasto.tarjeta = await Tarjeta.findOneOrFail(body.tarjeta)
     gasto.moneda = await Moneda.findOneOrFail(body.moneda)

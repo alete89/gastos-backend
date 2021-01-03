@@ -23,8 +23,8 @@ routes.get('/gastos', async function (req: Request, res: Response) {
   res.send(gastos)
 })
 
-routes.put('/gastos/mes', async function (req: Request, res: Response) {
-  const { anio, mes, id_tarjeta } = req.body
+routes.put('/gastos/mes', async function ({ body }: Request, res: Response) {
+  const { anio, mes, id_tarjeta } = body
   const fechaABuscar: string = formatearFecha(new Date(anio, mes, 1))
   const gastos = await Gasto.find({
     relations: ['tags', 'moneda', 'tarjeta'],
@@ -39,9 +39,9 @@ routes.get('/tags', async function (req: Request, res: Response) {
   res.send(tags)
 })
 
-routes.post('/tags/new', async function (req: Request, res: Response) {
-  if (req.body.nombre) {
-    const tag = new Tag({ nombre: req.body.nombre })
+routes.post('/tags/new', async function ({ body: { nombre } }: Request, res: Response) {
+  if (nombre) {
+    const tag = new Tag({ nombre })
     try {
       await Tag.insert(tag)
       res.sendStatus(200)
@@ -53,14 +53,14 @@ routes.post('/tags/new', async function (req: Request, res: Response) {
   }
 })
 
-routes.get('/anios/:id_tarjeta', async function (req: Request, res: Response) {
-  if (req.params.id_tarjeta) {
+routes.get('/anios/:id_tarjeta', async function ({ params: { id_tarjeta } }: Request, res: Response) {
+  if (id_tarjeta) {
     const response = await Tarjeta.query(
       `SELECT MIN(YEAR(fecha_primer_resumen)) as desde,
                     MAX(YEAR(DATE_ADD(fecha_primer_resumen,
                     INTERVAL gasto.cuotas month))) as hasta 
             from gasto
-            where tarjetaId = ${req.params.id_tarjeta}`
+            where tarjetaId = ${id_tarjeta}`
     )
     const anios = getAnios(Number(response[0].desde), Number(response[0].hasta))
     res.send(anios)
@@ -69,23 +69,22 @@ routes.get('/anios/:id_tarjeta', async function (req: Request, res: Response) {
   }
 })
 
-routes.get('/tarjetas', async function (req: Request, res: Response) {
+routes.get('/tarjetas', async function ({ cookies: { uid } }: Request, res: Response) {
   // const tarjetas = await Tarjeta.find({ relations: ['gastos'] }) // para qué quería los gastos acá?
   console.log('pide tarjetas')
-  const requestingUser = await getUserFromRequest(req.cookies.uid)
+  const requestingUser = await getUserFromRequest(uid)
   const tarjetas = await Tarjeta.find({ where: { user: requestingUser } })
   res.send(tarjetas)
 })
 
-routes.post('/gasto', async function (req: Request, res: Response) {
+routes.post('/gasto', async function ({ body }: Request, res: Response) {
   try {
-    const { body } = req
-    body.fecha = body.fecha ? toDate(body.fecha) : body.fecha
+    const { fecha, tarjeta, moneda, tags } = body
+    body.fecha = toDate(fecha)
     const gasto = new Gasto(body)
-    gasto.tarjeta = await Tarjeta.findOneOrFail(body.tarjeta)
-    gasto.moneda = await Moneda.findOneOrFail(body.moneda)
-    gasto.fecha = new Date(body.fecha)
-    gasto.tags = await getSelectedTags(body.tags)
+    gasto.tarjeta = await Tarjeta.findOneOrFail(tarjeta)
+    gasto.moneda = await Moneda.findOneOrFail(moneda)
+    gasto.tags = await getSelectedTags(tags)
     await gasto.save()
     res.sendStatus(200)
   } catch (error) {
@@ -94,10 +93,9 @@ routes.post('/gasto', async function (req: Request, res: Response) {
   }
 })
 
-routes.post('/tarjeta', async function (req: Request, res: Response) {
+routes.post('/tarjeta', async function ({ body, cookies: { uid } }: Request, res: Response) {
   try {
-    const { body } = req
-    const user = await getUserFromRequest(req.cookies.uid)
+    const user = await getUserFromRequest(uid)
     const tarjeta = new Tarjeta({ ...body, user })
     await tarjeta.save()
     res.sendStatus(200)
@@ -111,8 +109,8 @@ routes.post('/tarjeta', async function (req: Request, res: Response) {
  * Returns an array with three elements (last month, this month, next month)
  * each one is an array with the sum of all the gastos of the month for each Credit card in the system
  */
-routes.get('/summary', async function (req: Request, res: Response) {
-  const user = await getUserFromRequest(req.cookies.uid)
+routes.get('/summary', async function ({ cookies: { uid } }: Request, res: Response) {
+  const user = await getUserFromRequest(uid)
   const tarjetas = await Tarjeta.find({ relations: ['gastos'], where: { user } })
   const hoy = new Date()
   const meses = [

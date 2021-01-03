@@ -37,10 +37,10 @@ export class Gasto extends BaseEntity {
   @Column('decimal', { precision: 13, scale: 2 })
   monto_cuota: number
 
-  @Column({ type:"date", nullable: true })
+  @Column({ nullable: true })
   fecha: Date = new Date()
 
-  @Column({ type:"date", nullable: true })
+  @Column({ nullable: true })
   fecha_primer_resumen: Date
 
   @Column()

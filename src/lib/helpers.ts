@@ -11,8 +11,10 @@ export const toDate = (dateString: any) => {
 
 export function getAnios(desde: number, hasta: number) {
   const anios: Array<number> = []
-  for (desde; desde <= hasta; desde++) {
-    anios.push(desde)
+  if (desde && hasta) {
+    for (desde; desde <= hasta; desde++) {
+      anios.push(desde)
+    }
   }
   return anios
 }

@@ -1,10 +1,13 @@
 import { Request, Response } from 'express'
-import { formatearFecha, getAnios, getSelectedTags, toDate } from '../lib/helpers'
+import { getConnection } from 'typeorm'
+import { meses } from '../lib/constants'
+import { getAnios, getSelectedTags, toDate } from '../lib/helpers'
 import { Gasto } from '../model/gasto'
 import { Moneda } from '../model/moneda'
 import { Summary } from '../model/summary'
 import { Tag } from '../model/tag'
 import { Tarjeta } from '../model/tarjeta'
+import { gastosDeUnAnio, gastosDeUnMesYAnio } from '../repos/repoGasto'
 import { getAllUsers, getUserFromRequest } from './auth/authService'
 
 export const routes = require('express').Router()
@@ -25,12 +28,7 @@ routes.get('/gastos', async function (req: Request, res: Response) {
 
 routes.put('/gastos/mes', async function ({ body }: Request, res: Response) {
   const { anio, mes, id_tarjeta } = body
-  const fechaABuscar: string = formatearFecha(new Date(anio, mes, 1))
-  const gastos = await Gasto.find({
-    relations: ['tags', 'moneda', 'tarjeta'],
-    where: `fecha_primer_resumen <= '${fechaABuscar}' AND DATE_ADD(fecha_primer_resumen, INTERVAL (cuotas - 1) MONTH) >= '${fechaABuscar}'
-        AND tarjetaId = ${id_tarjeta}`,
-  })
+  const gastos = await gastosDeUnMesYAnio(id_tarjeta, mes, anio, ['tags', 'moneda', 'tarjeta'])
   res.send(gastos)
 })
 
@@ -55,10 +53,10 @@ routes.post('/tags/new', async function ({ body: { nombre } }: Request, res: Res
 
 routes.get('/anios/:id_tarjeta', async function ({ params: { id_tarjeta } }: Request, res: Response) {
   if (id_tarjeta) {
-    const response = await Tarjeta.query(
+    const response = await getConnection().query(
       `SELECT MIN(YEAR(fecha_primer_resumen)) as desde,
                     MAX(YEAR(DATE_ADD(fecha_primer_resumen,
-                    INTERVAL gasto.cuotas month))) as hasta 
+                    INTERVAL gasto.cuotas - 1 month))) as hasta 
             from gasto
             where tarjetaId = ${id_tarjeta}`
     )
@@ -68,6 +66,24 @@ routes.get('/anios/:id_tarjeta', async function ({ params: { id_tarjeta } }: Req
     res.sendStatus(400)
   }
 })
+
+routes.get(
+  '/meses/:anio/tarjeta/:id_tarjeta',
+  async function ({ params: { id_tarjeta, anio } }: Request, res: Response) {
+    if (id_tarjeta && anio) {
+      const gastos = await gastosDeUnAnio(id_tarjeta, Number(anio))
+
+      const mesesGastos = meses.map((mes, index) => ({
+        descripcion: mes,
+        tieneGastos: gastos.some((gasto) => gasto.estaEnResumen(Number(anio), index)),
+      }))
+
+      res.send(mesesGastos)
+    } else {
+      res.sendStatus(400)
+    }
+  }
+)
 
 routes.get('/tarjetas', async function ({ cookies: { uid } }: Request, res: Response) {
   // const tarjetas = await Tarjeta.find({ relations: ['gastos'] }) // para qué quería los gastos acá?

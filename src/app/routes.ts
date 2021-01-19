@@ -58,7 +58,7 @@ routes.get('/anios/:id_tarjeta', async function ({ params: { id_tarjeta } }: Req
                     MAX(YEAR(DATE_ADD(fecha_primer_resumen,
                     INTERVAL gasto.cuotas - 1 month))) as hasta 
             from gasto
-            where tarjetaId = ${id_tarjeta}`
+            where tarjetaId = ?`,[id_tarjeta]
     )
     const anios = getAnios(Number(response[0].desde), Number(response[0].hasta))
     res.send(anios)

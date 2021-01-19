@@ -1,8 +1,8 @@
 const ormConfig = {
-  type: 'mysql',
-  host: 'mysql',
-  port: 3306,
-  username: 'root',
+  type: 'postgres',
+  host: 'postgres',
+  port: 5432,
+  username: 'postgres',
   password: '1234',
   database: 'gastos',
   synchronize: true,

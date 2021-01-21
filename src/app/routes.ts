@@ -54,11 +54,10 @@ routes.post('/tags/new', async function ({ body: { nombre } }: Request, res: Res
 routes.get('/anios/:id_tarjeta', async function ({ params: { id_tarjeta } }: Request, res: Response) {
   if (id_tarjeta) {
     const response = await getConnection().query(
-      `SELECT MIN(YEAR(fecha_primer_resumen)) as desde,
-                    MAX(YEAR(DATE_ADD(fecha_primer_resumen,
-                    INTERVAL gasto.cuotas - 1 month))) as hasta 
+      `SELECT MIN(EXTRACT(YEAR FROM fecha_primer_resumen)) as desde,
+                    MAX(EXTRACT(YEAR FROM (fecha_primer_resumen + INTERVAL '1 month' * (cuotas - 1) ))) as hasta 
             from gasto
-            where tarjetaId = ?`,[id_tarjeta]
+            where "tarjetaId" = $1`, [id_tarjeta]
     )
     const anios = getAnios(Number(response[0].desde), Number(response[0].hasta))
     res.send(anios)

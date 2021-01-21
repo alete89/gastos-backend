@@ -16,8 +16,8 @@ const getGastos = async (id_tarjeta: string, desde: Date, hasta: Date, relations
   const gastos = await Gasto.find({
     relations,
     where: `fecha_primer_resumen <= '${formatearFecha(hasta)}' 
-            AND DATE_ADD(fecha_primer_resumen, INTERVAL (cuotas - 1) MONTH) >= '${formatearFecha(desde)}'
-            AND tarjetaId = ${id_tarjeta}`,
+            AND fecha_primer_resumen + INTERVAL '1 month' * (cuotas - 1) >= '${formatearFecha(desde)}'
+            AND "tarjetaId" = ${id_tarjeta}`,
   })
   return gastos
 }

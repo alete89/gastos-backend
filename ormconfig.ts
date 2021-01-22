@@ -1,12 +1,17 @@
-const ormConfig = {
-  type: 'postgres',
-  host: 'postgres',
-  port: 5432,
-  username: 'postgres',
-  password: '1234',
-  database: 'gastos',
-  synchronize: true,
-  entities: ['src/model/*{.ts, .js}'],
-}
+const entities = process.env.NODE_ENV === 'production'
+  ? ['build/src/model/*.js']
+  : ['src/model/*.ts']
 
-export = ormConfig
+module.exports = {
+  type: 'postgres',
+  url:
+    process.env.DATABASE_URL || process.env.DEV_DATABASE_URL,
+  entities,
+  synchronize: true,
+  ssl: true,
+  extra: {
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
+};

@@ -4,9 +4,9 @@
   "description": "Backend para GastosApp",
   "main": "index.js",
   "scripts": {
-    "tsc": "tsc",
+    "start": "node build/src/app/app.js",
+    "postinstall": "tsc",
     "dev": "ts-node-dev ./src/app/app.ts",
-    "prod": "tsc && node ./build/app/app.js",
     "test": "mocha -r ts-node/register tests/**/*.test.ts",
     "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test"
   },

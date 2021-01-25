@@ -96,10 +96,10 @@ routes.post('/gasto', async function ({ body }: Request, res: Response) {
   try {
     const { fecha, tarjeta, moneda, tags } = body
     body.fecha = toDate(fecha)
+    body.tarjeta = await Tarjeta.findOneOrFail(tarjeta)
+    body.moneda = await Moneda.findOneOrFail(moneda)
+    body.tags = await getSelectedTags(tags)
     const gasto = new Gasto(body)
-    gasto.tarjeta = await Tarjeta.findOneOrFail(tarjeta)
-    gasto.moneda = await Moneda.findOneOrFail(moneda)
-    gasto.tags = await getSelectedTags(tags)
     await gasto.save()
     res.sendStatus(200)
   } catch (error) {

@@ -8,8 +8,7 @@ export class Gasto extends BaseEntity {
   constructor(init?: Partial<Gasto>) {
     super()
     Object.assign(this, init)
-    if (init && init.tarjeta) {
-      this.tarjeta = Object.assign(new Tarjeta(), init.tarjeta)
+    if (this.tarjeta) {
       this.monto_cuota = this.monto_total / this.cuotas
       this.setFechaPrimerResumen()
     }

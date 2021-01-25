@@ -62,16 +62,18 @@ export class Gasto extends BaseEntity {
   comentario: string
 
   setFechaPrimerResumen() {
-    const fechaDeCierre = this.tarjeta.calcularfechaDeCierre(this.fecha.getFullYear(), this.fecha.getMonth())
-    this.fecha_primer_resumen = new Date(this.fecha.getFullYear(), this.fecha.getMonth() + 1, 1)
-
-    if (this.fecha > fechaDeCierre) this.fecha_primer_resumen.setMonth(this.fecha_primer_resumen.getMonth() + 1)
+    const anio = this.fecha.getFullYear()
+    const mes = this.fecha.getMonth()
+    const fechaDeCierre = this.tarjeta.calcularfechaDeCierre(anio, mes)
+    this.fecha_primer_resumen = new Date(anio, this.fecha > fechaDeCierre ? mes + 2 : mes + 1, 1)
   }
 
   estaEnResumen(anio: number, mes: number) {
     const fecha = new Date(anio, mes, 1)
-    const fecha_ultimo_resumen = new Date(this.fecha_primer_resumen)
-    fecha_ultimo_resumen.setMonth(this.fecha_primer_resumen.getMonth() + this.cuotas - 1)
-    return fecha >= this.fecha_primer_resumen && fecha <= fecha_ultimo_resumen
+    return fecha >= this.fecha_primer_resumen && fecha <= this.fechaUltimoResumen()
+  }
+
+  fechaUltimoResumen() {
+    return new Date(this.fecha_primer_resumen.getFullYear(), this.fecha_primer_resumen.getMonth() + this.cuotas - 1, this.fecha_primer_resumen.getDate())
   }
 }

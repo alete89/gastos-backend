@@ -39,8 +39,8 @@ export class Tarjeta extends BaseEntity {
     let fecha = new Date(anio, mes, 1, 23, 59, 59)
     fecha.setDate(
       1 +
-        7 * (this.semanaCierre - 1) +
-        this.ajusteDia(this.getDayFrom0To6(this.diaCierre) - fecha.getDay())
+      7 * (this.semanaCierre - 1) +
+      this.ajusteDia(this.getDayFrom0To6(this.diaCierre) - fecha.getDay())
     )
     if (fecha.getMonth() > mes) fecha.setDate(fecha.getDate() - 7) //EN EL CASO DE QUE LA REGLA SEA LA 5TA SEMANA Y ESE DIA TIENE SOLO 4 EN ESE MES, LE RESTA 7 DIAS PARA DEVOLVER EL 4TO.
     return fecha
@@ -48,12 +48,12 @@ export class Tarjeta extends BaseEntity {
 
   ajusteDia(diferencia: number) {
     if (diferencia < 0) return 7 + diferencia
-    else return diferencia
+    return diferencia
   }
 
   getDayFrom0To6(dia: number) {
     if (dia == 7) return 0
-    else return dia
+    return dia
   }
 
   totalMes(anio: number, mes: number) {

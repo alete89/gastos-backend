@@ -26,10 +26,10 @@ routes.post('/register', async ({ body: { email, password } }, res) => {
 
 routes.post('/login', async ({ body: { email, password } }, res) => {
   try {
-    const result = await login(email, password)
+    const {accessToken, refreshToken} = await login(email, password)
 
-    sendRefreshToken(res, result.refreshToken)
-    res.status(200).json(result.accessToken)
+    sendRefreshToken(res, refreshToken)
+    res.status(200).json(accessToken)
   } catch (error) {
     res.status(401).json(error)
   }

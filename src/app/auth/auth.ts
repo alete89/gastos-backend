@@ -1,4 +1,5 @@
 import { sign, verify } from 'jsonwebtoken'
+import { Tarjeta } from '../../model/tarjeta'
 import { User } from '../../model/user'
 
 export const createAccessToken = (user: User) => {
@@ -26,4 +27,22 @@ export const isLoggedIn = (req: any, _: any, next: any) => {
   }
 
   return next()
+}
+
+export const hasCard = async ({ payload, body, params }: any, res: any, next: any) => {
+  const id_tarjeta = body.id_tarjeta ?? body.tarjeta ?? params.id_tarjeta
+  const { userId } = payload
+
+  const tarjetas = await Tarjeta.find({ where: { user: userId } })
+
+  if(tarjetas.length == 0 || !id_tarjeta) {
+    res.senStatus(400)
+  }
+
+  if (tarjetas.every(tarjeta => tarjeta.id != id_tarjeta)) {
+    res.sendStatus(403)
+  }
+
+  return next()
+
 }

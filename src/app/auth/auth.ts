@@ -11,11 +11,12 @@ export const createRefreshToken = (user: User) => {
   })
 }
 
-export const isLoggedIn = (req: any, _: any, next: any) => {
+export const isLoggedIn = (req: any, res: any, next: any) => {
   const { authorization } = req.headers
 
   if (!authorization) {
-    throw new Error('not authenticated')
+    res.sendStatus(400)
+    // throw new Error('not authenticated')
   }
   try {
     const token = authorization.split(' ')[1]
@@ -23,7 +24,8 @@ export const isLoggedIn = (req: any, _: any, next: any) => {
     req.payload = payload
   } catch (error) {
     console.log(error)
-    throw new Error('not authenticated')
+    res.sendStatus(401)
+    // throw new Error('not authenticated')
   }
 
   return next()

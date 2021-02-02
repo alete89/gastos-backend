@@ -1,10 +1,9 @@
 import 'dotenv/config'
 import { Router } from 'express'
-import { verify } from 'jsonwebtoken'
 import 'reflect-metadata'
 import { getConnection } from 'typeorm'
 import { User } from '../../model/user'
-import { createAccessToken, createRefreshToken, isLoggedIn } from './auth'
+import { createAccessToken, createRefreshToken, isLoggedIn, validateRefreshToken } from './auth'
 import { login, register } from './authService'
 import { sendRefreshToken } from './sendRefreshToken'
 
@@ -26,7 +25,7 @@ routes.post('/register', async ({ body: { email, password } }, res) => {
 
 routes.post('/login', async ({ body: { email, password } }, res) => {
   try {
-    const {accessToken, refreshToken} = await login(email, password)
+    const { accessToken, refreshToken } = await login(email, password)
 
     sendRefreshToken(res, refreshToken)
     res.status(200).json(accessToken)
@@ -40,32 +39,7 @@ routes.get('/validate', isLoggedIn, async ({ payload }, res) => {
   res.send(payload)
 })
 
-routes.post('/refresh_token', async ({ cookies: { uid } }, res) => {
-  //isLoggedIn ?
-  console.log('refresh invoked')
-  const token = uid
-  if (!token) {
-    return res.send({ ok: false, accessToken: '' })
-  }
-  let payload: any = null
-  try {
-    payload = verify(token, process.env.REFRESH_TOKEN_SECRET!)
-  } catch (error) {
-    console.log(error)
-    return res.send({ ok: false, accessToken: '' })
-  }
-
-  // token is valid (was signed with this refresh)
-  // and we can send back and access token
-  const user = await User.findOne({ id: payload.userId })
-
-  if (!user) {
-    return res.send({ ok: false, accessToken: '' })
-  }
-
-  if (user.tokenVersion !== payload.tokenVersion) {
-    return res.send({ ok: false, accessToken: '' })
-  }
+routes.post('/refresh_token', validateRefreshToken, async ({ payload: user }, res) => {
 
   sendRefreshToken(res, createRefreshToken(user))
 

@@ -2,7 +2,6 @@ import { compare, hash } from 'bcryptjs'
 import { User } from '../../model/user'
 import { createAccessToken, createRefreshToken } from './auth'
 import { LoginResponse } from './types'
-import { verify } from 'jsonwebtoken'
 
 export const register = async (email: string, password: string): Promise<any> => {
   try {
